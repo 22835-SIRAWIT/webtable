@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดการข้อมูลในตาราง</title>
+    <title>ระบบเก็บข้อมูลตาราง</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-100 p-6 font-sans">
+<body class="bg-slate-100 p-4 md:p-8 font-sans">
 
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">📊 ระบบเก็บข้อมูลรูปแบบตาราง</h1>
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h1 class="text-2xl font-bold mb-6 text-slate-800 text-center">📊 ตารางบันทึกข้อมูล</h1>
 
-        <form id="dataForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-gray-50 p-4 rounded-md border border-gray-200">
+        <form id="dataForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
             <input type="hidden" id="editIndex">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">ชื่อ-นามสกุล</label>
-                <input type="text" id="nameInput" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-slate-700 mb-1">ชื่อ-นามสกุล</label>
+                <input type="text" id="nameInput" required class="w-full p-2 border border-slate-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">ตำแหน่งงาน</label>
-                <input type="text" id="roleInput" required class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-slate-700 mb-1">ตำแหน่งงาน</label>
+                <input type="text" id="roleInput" required class="w-full p-2 border border-slate-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
             </div>
             <div class="flex items-end">
-                <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-150 text-sm cursor-pointer">
                     ➕ เพิ่มข้อมูล
                 </button>
             </div>
         </form>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200 rounded-md overflow-hidden">
-                <thead class="bg-gray-800 text-white">
+        <div class="overflow-x-auto rounded-lg border border-slate-200">
+            <table class="min-w-full bg-white text-sm">
+                <thead class="bg-slate-800 text-white text-left">
                     <tr>
-                        <th class="py-3 px-4 text-left font-semibold text-sm">ลำดับ</th>
-                        <th class="py-3 px-4 text-left font-semibold text-sm">ชื่อ-นามสกุล</th>
-                        <th class="py-3 px-4 text-left font-semibold text-sm">ตำแหน่งงาน</th>
-                        <th class="py-3 px-4 text-center font-semibold text-sm">จัดการ</th>
+                        <th class="py-3 px-4 font-semibold w-16 text-center">ลำดับ</th>
+                        <th class="py-3 px-4 font-semibold">ชื่อ-นามสกุล</th>
+                        <th class="py-3 px-4 font-semibold">ตำแหน่งงาน</th>
+                        <th class="py-3 px-4 font-semibold text-center w-36">จัดการ</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody" class="divide-y divide-gray-200">
+                <tbody id="tableBody" class="divide-y divide-slate-200">
                     </tbody>
             </table>
         </div>
@@ -52,92 +52,69 @@
         const submitBtn = document.getElementById('submitBtn');
         const tableBody = document.getElementById('tableBody');
 
-        // โหลดข้อมูลจาก LocalStorage ถ้าไม่มีให้ใช้ array ว่าง
-        let dataList = JSON.parse(localStorage.getItem('tableData')) || [];
+        let dataList = JSON.parse(localStorage.getItem('myTableData')) || [];
 
-        // ฟังก์ชันแสดงผลตาราง
         function renderTable() {
             tableBody.innerHTML = '';
-            
             if (dataList.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="py-4 text-center text-gray-500">❌ ไม่มีข้อมูลในตาราง</td>
-                    </tr>
-                `;
+                tableBody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400">ยังไม่มีข้อมูลในระบบ</td></tr>`;
                 return;
             }
-
             dataList.forEach((item, index) => {
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50 transition duration-150';
+                row.className = 'hover:bg-slate-50';
                 row.innerHTML = `
-                    <td class="py-3 px-4 text-sm text-gray-700">${index + 1}</td>
-                    <td class="py-3 px-4 text-sm text-gray-900 font-medium">${item.name}</td>
-                    <td class="py-3 px-4 text-sm text-gray-600">${item.role}</td>
-                    <td class="py-3 px-4 text-sm text-center">
-                        <button onclick="editData(${index})" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs font-semibold mr-1 transition">แก้ไข</button>
-                        <button onclick="deleteData(${index})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold transition">ลบ</button>
+                    <td class="py-3 px-4 text-center text-slate-500">${index + 1}</td>
+                    <td class="py-3 px-4 font-medium text-slate-900">${item.name}</td>
+                    <td class="py-3 px-4 text-slate-600">${item.role}</td>
+                    <td class="py-3 px-4 text-center space-x-1">
+                        <button onclick="editData(${index})" class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-xs font-medium transition cursor-pointer">แก้ไข</button>
+                        <button onclick="deleteData(${index})" class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1 rounded text-xs font-medium transition cursor-pointer">ลบ</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
-
-            // บันทึกลง LocalStorage ทุกครั้งที่มีการเปลี่ยนแปลง
-            localStorage.setItem('tableData', JSON.stringify(dataList));
+            localStorage.setItem('myTableData', JSON.stringify(dataList));
         }
 
-        // ฟังก์ชันเมื่อกดซับมิตฟอร์ม (เพิ่มหรือแก้ไขข้อมูล)
         dataForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
             const name = nameInput.value.trim();
             const role = roleInput.value.trim();
             const editIndex = editIndexInput.value;
 
             if (editIndex === "") {
-                // โหมดเพิ่มข้อมูลใหม่
                 dataList.push({ name, role });
             } else {
-                // โหมดแก้ไขข้อมูลเดิม
                 dataList[editIndex] = { name, role };
                 editIndexInput.value = "";
                 submitBtn.innerHTML = "➕ เพิ่มข้อมูล";
-                submitBtn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200";
+                submitBtn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-150 text-sm cursor-pointer";
             }
-
-            // ล้างค่าในฟอร์มและรีเฟรชตาราง
             dataForm.reset();
             renderTable();
         });
 
-        // ฟังก์ชันดึงข้อมูลมาใส่ฟอร์มเพื่อแก้ไข
         window.editData = function(index) {
             nameInput.value = dataList[index].name;
             roleInput.value = dataList[index].role;
             editIndexInput.value = index;
-            
-            submitBtn.innerHTML = "💾 บันทึกการแก้ไข";
-            submitBtn.className = "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-200";
+            submitBtn.innerHTML = "💾 บันทึกแก้ไข";
+            submitBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-md transition duration-150 text-sm cursor-pointer";
         };
 
-        // ฟังก์ชันลบข้อมูล
         window.deleteData = function(index) {
-            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?')) {
+            if (confirm('ยืนยันที่จะลบข้อมูลแถวนี้ใช่ไหม?')) {
                 dataList.splice(index, 1);
                 renderTable();
-                
-                // ถ้าระหว่างแก้ไขแล้วกดลบ ให้ล้างค่าฟอร์มด้วย
                 if (editIndexInput.value == index) {
                     dataForm.reset();
                     editIndexInput.value = "";
                     submitBtn.innerHTML = "➕ เพิ่มข้อมูล";
-                    submitBtn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200";
                 }
             }
         };
 
-        // เริ่มต้นเรียกทำงานตารางตอนเปิดเว็บครั้งแรก
         renderTable();
     </script>
 </body>
